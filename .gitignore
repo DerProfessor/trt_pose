@@ -1,0 +1,18 @@
+# Ignore Coco dataset
+**/coco_datasets/
+
+# Ignore Python cache
+**/__pycache__/
+
+# Ignore build files from trt_pose
+**/build/
+**/*.egg-info/
+
+# Ignore tensorboard logs
+**/*-tb-logs/
+
+# Ignore training checkpoints
+**/*.checkpoints/
+
+# Ignore training logs
+*.log
