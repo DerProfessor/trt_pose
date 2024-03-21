@@ -10,6 +10,7 @@ import time
 import json
 import pprint
 import torch.nn.functional as F
+from torch.utils.tensorboard import SummaryWriter
 from coco import CocoDataset, CocoHumanPoseEval
 from models import MODELS
 
@@ -53,6 +54,7 @@ if __name__ == '__main__':
         pprint.pprint(config)
         
     logfile_path = args.config + '.log'
+    writer = SummaryWriter(args.config + "-tb-logs/")
     
     checkpoint_dir = args.config + '.checkpoints'
     if not os.path.exists(checkpoint_dir):
@@ -160,6 +162,8 @@ if __name__ == '__main__':
             
         train_loss /= len(train_loader)
         
+        writer.add_scalar('Loss/train', train_loss, epoch)
+        
         test_loss = 0.0
         model = model.eval()
         for image, cmap, paf, mask in tqdm.tqdm(iter(test_loader)):
@@ -190,3 +194,5 @@ if __name__ == '__main__':
         
         if 'evaluation' in config:
             evaluator.evaluate(model, train_dataset.topology)
+    
+    writer.flush()
