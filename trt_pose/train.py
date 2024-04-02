@@ -102,10 +102,12 @@ if __name__ == '__main__':
     )
     
     model = MODELS[config['model']['name']](**config['model']['kwargs']).to(device)
-    
+
+    start = 0
     if "initial_state_dict" in config['model']:
         print('Loading initial weights from %s' % config['model']['initial_state_dict'])
         model.load_state_dict(torch.load(config['model']['initial_state_dict']))
+        start = config['model']['initial_epoch']
     
     optimizer = OPTIMIZERS[config['optimizer']['name']](model.parameters(), **config['optimizer']['kwargs'])
     model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
@@ -115,8 +117,8 @@ if __name__ == '__main__':
         mask_unlabeled = True
     else:
         mask_unlabeled = False
-        
-    for epoch in range(config["epochs"]):
+    
+    for epoch in range(start, config["epochs"]):
         
         if str(epoch) in config['stdev_schedule']:
             stdev = config['stdev_schedule'][str(epoch)]
